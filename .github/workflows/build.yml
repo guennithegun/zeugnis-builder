@@ -4,15 +4,15 @@ on: workflow_dispatch
 
 jobs:
   build-windows:
-    runs-on: windows-2019  # Uses an older Windows server (safer for Win7 compatibility)
+    runs-on: windows-2019
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python 3.8
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.8' # Strict requirement for Windows 7
+          python-version: '3.8'
           architecture: 'x64'
 
       - name: Install Dependencies
@@ -20,12 +20,11 @@ jobs:
           pip install "pikepdf<9" customtkinter tkcalendar pyinstaller
 
       - name: Build EXE
-        # This command includes the special collect-all flag for the GUI
         run: |
           pyinstaller --noconsole --onefile --collect-all customtkinter --name ZeugnisTool_Win7 main.py
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ZeugnisTool_Win7_App
           path: dist/ZeugnisTool_Win7.exe
