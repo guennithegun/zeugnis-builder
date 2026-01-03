@@ -1,0 +1,31 @@
+name: Build Windows 7 Exe
+
+on: workflow_dispatch
+
+jobs:
+  build-windows:
+    runs-on: windows-2019  # Uses an older Windows server (safer for Win7 compatibility)
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8' # Strict requirement for Windows 7
+          architecture: 'x64'
+
+      - name: Install Dependencies
+        run: |
+          pip install "pikepdf<9" customtkinter tkcalendar pyinstaller
+
+      - name: Build EXE
+        # This command includes the special collect-all flag for the GUI
+        run: |
+          pyinstaller --noconsole --onefile --collect-all customtkinter --name ZeugnisTool_Win7 main.py
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ZeugnisTool_Win7_App
+          path: dist/ZeugnisTool_Win7.exe
